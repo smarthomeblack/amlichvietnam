@@ -183,9 +183,10 @@ timeout: "00:00:10"
 
 Một số hình ảnh minh họa tính năng (thư mục `image/`):
 
-![Demo 1](image/demo1.png)
-![Demo 2](image/demo2.png)
-![Demo 3](image/demo3.png)
+![Demo 1](image/1.png)
+![Demo 2](image/2.png)
+![Demo 3](image/3.png)
+![Demo 3](image/4.png)
 
 ---
 

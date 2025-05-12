@@ -13,6 +13,18 @@ Tiện ích giúp tra cứu Âm Lịch và Sự Kiện theo ngày qua AI hoặc 
 - Copy thư mục `amlich` vào thư mục `custom_components` của Home Assistant.
 - Copy file `amlich.ics` vào thư mục gốc của Home Assistant (ngang hàng với `configuration.yaml`).
 
+#### Cấu trúc thư mục tham khảo:
+```text
+/config/
+├── configuration.yaml
+├── custom_components/
+│   ├── amlich/
+│   │   ├── __init__.py
+│   │   ├── amlich_core.py
+│   │   └── ...
+├── amlich.ics
+```
+
 ### 2. Tạo biến trợ giúp
 
 - Vào **Cài đặt → Thiết bị & Dịch vụ → Biến trợ giúp**.

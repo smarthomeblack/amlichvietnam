@@ -153,3 +153,31 @@ Bạn có thể tạo issue hoặc pull request nếu phát hiện lỗi hoặc 
 ---
 
 Chúc bạn sử dụng vui vẻ! ✨
+
+---
+
+## 🧑‍🏫 Hướng dẫn sử dụng
+
+### 1. Tra cứu Âm Lịch
+
+Để tra cứu âm lịch, trong câu chat cần **luôn có từ "âm lịch"**.
+
+**Ví dụ:**
+
+- "Âm lịch hôm nay"
+- "Âm lịch ngày mai"
+- "Cho tôi biết âm lịch 12/12/2025"
+
+### 2. Tra cứu Sự Kiện
+
+Để tra cứu sự kiện, trong câu chat cần **luôn có từ "sự kiện"**.
+
+**Ví dụ:**
+
+- "Sự kiện hôm nay"
+- "Sự kiện ngày mai"
+- "Cho tôi biết sự kiện 12/12/2025"
+- "Sự kiện tuần này", "Sự kiện tuần sau"
+- "Sự kiện tháng này", "Sự kiện tháng 1"
+
+> Bạn có thể sử dụng **tiếng Việt không dấu** cho các câu lệnh, rất tiện lợi cho người dùng lười gõ dấu.

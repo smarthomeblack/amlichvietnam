@@ -96,35 +96,35 @@ mode: single
 ### Tự Động Tra Cứu Sự Kiện Nâng Cao
 
 ```yaml
-alias: Tự Động Tra Cứu Sự Kiện Nâng Cao
-description: Tra Cứu Sự Kiện Nâng Cao
-trigger:
-  - platform: state
-    entity_id: input_text.tracuu
-  - platform: conversation
+alias: Tra cứu sự kiện nâng cao
+description: Tra cứu sự kiện nâng cao
+triggers:
+  - entity_id: input_text.tracuu
+    trigger: state
+  - trigger: conversation
     command:
-      - "{a} sự kiện {date}"
-      - "sự kiện {date}"
       - "{a} su kien {date}"
-      - "su kien {date}"
-condition: []
-action:
-  - service: input_text.set_value
+      - su kien {date}
+      - "{a} sự kiện {date}"
+      - sự kiện {date}
+conditions: []
+actions:
+  - action: input_text.set_value
+    metadata: {}
+    data:
+      value: "\"Sự kiện {{ trigger.slots.date }}\""
     target:
       entity_id: input_text.tracuu
-    data:
-      value: "\"{{ trigger.slots.date }}\""
   - variables:
       old_value: "{{ states('sensor.tra_cuu_su_kien') }}"
   - wait_template: "{{ states('sensor.tra_cuu_su_kien') != old_value }}"
-    timeout: "00:00:05"
+    timeout: "00:00:10"
     continue_on_timeout: true
-  - service: conversation.set_response
-    data:
-      response: >-
-        {{ state_attr('sensor.tra_cuu_su_kien', 'output') |
-        default(states('sensor.tra_cuu_su_kien'), true) }}
+  - set_conversation_response: >-
+      {{ state_attr('sensor.tra_cuu_su_kien', 'output') |
+      default(states('sensor.tra_cuu_su_kien'), true) }}
 mode: single
+
 ```
 
 ---

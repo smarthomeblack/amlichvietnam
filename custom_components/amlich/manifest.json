@@ -1,0 +1,9 @@
+{
+  "domain": "amlich",
+  "name": "Âm Lịch Việt Nam",
+  "version": "1.0.0",
+  "documentation": "https://github.com/your-repo/amlich",
+  "requirements": ["icalendar==5.0.13", "python-dateutil==2.9.0", "requests==2.32.3"],
+  "codeowners": ["@your-username"],
+  "iot_class": "local_polling"
+}

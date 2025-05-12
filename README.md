@@ -59,7 +59,7 @@ sensor:
 
 ## ⚙️ Tạo tự động hóa (Automation)
 
-### 6. Tự động hóa: Tra Cứu Âm Lịch Nâng Cao
+### Tự Động Tra Cứu Âm Lịch Nâng Cao
 
 ```yaml
 alias: Tự Động Tra Cứu Âm Lịch Nâng Cao
@@ -93,9 +93,7 @@ action:
 mode: single
 ```
 
----
-
-### 7. Tự động hóa: Tra Cứu Sự Kiện Nâng Cao
+### Tự Động Tra Cứu Sự Kiện Nâng Cao
 
 ```yaml
 alias: Tự Động Tra Cứu Sự Kiện Nâng Cao
@@ -145,26 +143,11 @@ timeout: "00:00:10"
 
 Để phản hồi sinh động hơn từ AI:
 
-1. Mở file `amlich_core.py` trong thư mục `custom_components/amlich`.
-2. Tìm dòng:
-
-```python
-async def query_date(hass: HomeAssistant, query, use_humor=False)
-```
-
-3. Thay `use_humor=False` thành `use_humor=True`.
+1. Mở các file `amlich_core.py` và `sensor.py` trong thư mục `custom_components/amlich`.
+2. Tìm tất cả dòng có chứa `use_humor=False` và sửa thành `use_humor=True`.
+3. Khởi động lại Home Assistant.
 
 > ⚠️ Lưu ý: Kết quả sẽ sinh động hơn nhưng phản hồi có thể **chậm hơn** do phụ thuộc tốc độ phản hồi của AI.
-
----
-
-## 📩 Góp ý & Liên hệ
-
-Bạn có thể tạo issue hoặc pull request nếu phát hiện lỗi hoặc muốn đóng góp cải tiến.
-
----
-
-Chúc bạn sử dụng vui vẻ! ✨
 
 ---
 
@@ -193,3 +176,23 @@ Chúc bạn sử dụng vui vẻ! ✨
 - "Sự kiện tháng này", "Sự kiện tháng 1"
 
 > Bạn có thể sử dụng **tiếng Việt không dấu** cho các câu lệnh, rất tiện lợi cho người dùng lười gõ dấu.
+
+---
+
+## 🖼️ Ảnh demo
+
+Một số hình ảnh minh họa tính năng (thư mục `image/`):
+
+![Demo 1](image/demo1.png)
+![Demo 2](image/demo2.png)
+![Demo 3](image/demo3.png)
+
+---
+
+## 📩 Góp ý & Liên hệ
+
+Bạn có thể tạo issue hoặc pull request nếu phát hiện lỗi hoặc muốn đóng góp cải tiến.
+
+---
+
+Chúc bạn sử dụng vui vẻ! ✨

@@ -48,7 +48,7 @@ class AmlichSensor(SensorEntity):
                     _LOGGER.debug(f"Xử lý truy vấn: {query}")
                     # Tạo coroutine để gọi query_date
                     async def handle_query():
-                        result = await query_date(self._hass, query, use_humor=False)
+                        result = await query_date(self._hass, query, use_humor=True)
                         self._attributes = result
                         self._state = result.get("output", "Không có dữ liệu")[:255]
                         self.async_write_ha_state()
@@ -62,7 +62,7 @@ class AmlichSensor(SensorEntity):
 
             input_state = self._hass.states.get(INPUT_TEXT_ENTITY)
             if input_state and input_state.state and input_state.state != STATE_UNKNOWN:
-                result = await query_date(self._hass, input_state.state.strip(), use_humor=False)
+                result = await query_date(self._hass, input_state.state.strip(), use_humor=True)
                 self._attributes = result
                 self._state = result.get("output", "Không có dữ liệu")[:255]
                 self.async_write_ha_state()

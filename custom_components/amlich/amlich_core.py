@@ -316,7 +316,7 @@ async def parse_input(hass: HomeAssistant, input_text, is_fixed=False):
     return await parse_with_gemini(hass, input_text)
 
 # Hàm gọi Gemini API để tạo output hài hước
-async def generate_humorous_output(hass: HomeAssistant, original_output, use_humor=False):
+async def generate_humorous_output(hass: HomeAssistant, original_output, use_humor=True):
     if not use_humor:
         return original_output
     if not GEMINI_API_KEY:
@@ -353,7 +353,7 @@ async def generate_humorous_output(hass: HomeAssistant, original_output, use_hum
     return await hass.async_add_executor_job(make_request)
 
 # Hàm tra cứu và tạo kết quả
-async def query_date(hass: HomeAssistant, query, use_humor=False):
+async def query_date(hass: HomeAssistant, query, use_humor=True):
     global _lunar_dates, _events
     try:
         parsed = await parse_input(hass, query)

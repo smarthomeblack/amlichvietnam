@@ -1,9 +1,9 @@
 {
   "domain": "amlich",
-  "name": "Âm Lịch Việt Nam",
+  "name": "Âm Lịch Và Sự Kiện Việt Nam",
   "version": "1.0.0",
-  "documentation": "https://github.com/your-repo/amlich",
+  "documentation": "https://github.com/smarthomeblack/amlichvietnam",
   "requirements": ["icalendar==5.0.13", "python-dateutil==2.9.0", "requests==2.32.3"],
-  "codeowners": ["@your-username"],
+  "codeowners": ["@smarthomeblack"],
   "iot_class": "local_polling"
 }

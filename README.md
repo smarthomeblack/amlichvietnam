@@ -1,4 +1,4 @@
-
+# Update 19h 13/5/2025: Cập nhập file amlich.ics chuẩn và đầy đủ tới 2055
 # 📅 Lịch Âm cho Home Assistant (Custom Component)
 
 Tiện ích giúp tra cứu Âm Lịch và Sự Kiện theo ngày qua AI hoặc giao diện điều khiển trên Home Assistant.

@@ -63,34 +63,34 @@ sensor:
 
 ```yaml
 alias: Tự Động Tra Cứu Âm Lịch Nâng Cao
-description: Tra Cứu Âm Lịch Nâng Cao
-trigger:
-  - platform: state
-    entity_id: input_text.tracuu
-  - platform: conversation
+description: Kiểm tra sensor.tra_cuu_su_kien nhiều lần nếu chưa thay đổi
+triggers:
+  - entity_id: input_text.tracuu
+    trigger: state
+  - trigger: conversation
     command:
       - "{a} Âm lịch {date}"
-      - "Âm lịch {date}"
+      - Âm lịch {date}
       - "{a} am lich {date}"
-      - "am lich {date}"
-condition: []
-action:
-  - service: input_text.set_value
-    target:
-      entity_id: input_text.tracuu
+      - am lich {date}
+conditions: []
+actions:
+  - action: input_text.set_value
+    metadata: {}
     data:
       value: "\"{{ trigger.slots.date }}\""
+    target:
+      entity_id: input_text.tracuu
   - variables:
       old_value: "{{ states('sensor.tra_cuu_su_kien') }}"
   - wait_template: "{{ states('sensor.tra_cuu_su_kien') != old_value }}"
-    timeout: "00:00:05"
+    timeout: "00:00:10"
     continue_on_timeout: true
-  - service: conversation.set_response
-    data:
-      response: >-
-        {{ state_attr('sensor.tra_cuu_su_kien', 'output') |
-        default(states('sensor.tra_cuu_su_kien'), true) }}
+  - set_conversation_response: >-
+      {{ state_attr('sensor.tra_cuu_su_kien', 'output') |
+      default(states('sensor.tra_cuu_su_kien'), true) }}
 mode: single
+
 ```
 
 ### Tự Động Tra Cứu Sự Kiện Nâng Cao

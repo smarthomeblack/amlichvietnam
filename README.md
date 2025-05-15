@@ -1,4 +1,5 @@
 # Update 19h 13/5/2025: Cập nhập file amlich.ics chuẩn và đầy đủ tới 2055
+# Update 9h 15/5/2025: Cập nhập file amlich.ics thêm nhiều sự kiện, tối ưu tự động hóa, thêm tra cứu âm lịch sang dương lịch
 # 📅 Lịch Âm cho Home Assistant (Custom Component)
 
 Tiện ích giúp tra cứu Âm Lịch và Sự Kiện theo ngày qua AI hoặc giao diện điều khiển trên Home Assistant.
@@ -56,44 +57,10 @@ sensor:
 - Nếu chưa có, kiểm tra lại kỹ từ bước 2.
 
 ---
-
+## Nếu update thì xóa hết tự động hóa cũ liên quan tới amlichvietnam
 ## ⚙️ Tạo tự động hóa (Automation)
 
-### Tự Động Tra Cứu Âm Lịch Nâng Cao
-
-```yaml
-alias: Tự Động Tra Cứu Âm Lịch Nâng Cao
-description: Kiểm tra sensor.tra_cuu_su_kien nhiều lần nếu chưa thay đổi
-triggers:
-  - entity_id: input_text.tracuu
-    trigger: state
-  - trigger: conversation
-    command:
-      - "{a} Âm lịch {date}"
-      - Âm lịch {date}
-      - "{a} am lich {date}"
-      - am lich {date}
-conditions: []
-actions:
-  - action: input_text.set_value
-    metadata: {}
-    data:
-      value: "\"{{ trigger.slots.date }}\""
-    target:
-      entity_id: input_text.tracuu
-  - variables:
-      old_value: "{{ states('sensor.tra_cuu_su_kien') }}"
-  - wait_template: "{{ states('sensor.tra_cuu_su_kien') != old_value }}"
-    timeout: "00:00:10"
-    continue_on_timeout: true
-  - set_conversation_response: >-
-      {{ state_attr('sensor.tra_cuu_su_kien', 'output') |
-      default(states('sensor.tra_cuu_su_kien'), true) }}
-mode: single
-
-```
-
-### Tự Động Tra Cứu Sự Kiện Nâng Cao
+### Tự Động Tra Cứu Nâng Cao
 
 ```yaml
 alias: Tra cứu sự kiện nâng cao
@@ -101,49 +68,56 @@ description: Tra cứu sự kiện nâng cao
 triggers:
   - entity_id: input_text.tracuu
     trigger: state
+    enabled: false
   - trigger: conversation
     command:
-      - "{a} su kien {date}"
-      - su kien {date}
-      - "{a} sự kiện {date}"
-      - sự kiện {date}
+      - "{a} su kien {sukien}"
+      - su kien {sukien}
+      - "{a} sự kiện {sukien}"
+      - sự kiện {sukien}
+      - "{a} am lich {amlich}"
+      - am lich {amlich}
+      - "{a} âm lịch {amlich}"
+      - âm lịch {amlich}
+      - "{a} duong lich {duonglich}"
+      - duong lich {duonglich}
+      - "{a} dương lịch {duonglich}"
+      - dương lịch {duonglich}
 conditions: []
 actions:
   - action: input_text.set_value
     metadata: {}
     data:
-      value: "\"Sự kiện {{ trigger.slots.date }}\""
+      value: >-
+        {{ 'Âm lịch ' ~ trigger.slots.amlich if trigger.slots.amlich is defined
+        else 'Dương lịch ' ~ trigger.slots.duonglich if trigger.slots.duonglich
+        is defined else 'Sự kiện ' ~ trigger.slots.sukien if
+        trigger.slots.sukien is defined else 'Không có thông tin phù hợp' }}
     target:
       entity_id: input_text.tracuu
   - variables:
       old_value: "{{ states('sensor.tra_cuu_su_kien') }}"
   - wait_template: "{{ states('sensor.tra_cuu_su_kien') != old_value }}"
-    timeout: "00:00:10"
+    timeout: "00:00:5"
     continue_on_timeout: true
   - set_conversation_response: >-
-      {{ state_attr('sensor.tra_cuu_su_kien', 'output') |
-      default(states('sensor.tra_cuu_su_kien'), true) }}
+      {{ state_attr('sensor.tra_cuu_su_kien', 'output') | default('Không có dữ
+      liệu sự kiện, vui lòng thử lại!', true) }}
 mode: single
 
-```
 
----
+
 
 ## 🧪 Mẹo khắc phục
 
 - Nếu kết quả phản hồi từ chatbot không đúng hoặc bị trễ, hãy thử **tăng timeout** từ `00:00:05` lên `00:00:10`.
 
-```yaml
-timeout: "00:00:10"
-```
-
----
 
 ## 🤖 Tùy chỉnh phản hồi bằng AI
 
 Để phản hồi sinh động hơn từ AI:
 
-1. Mở các file `amlich_core.py` và `sensor.py` trong thư mục `custom_components/amlich`.
+1. Mở file `sensor.py` trong thư mục `custom_components/amlich`.
 2. Tìm tất cả dòng có chứa `use_humor=False` và sửa thành `use_humor=True`.
 3. Khởi động lại Home Assistant.
 
@@ -153,7 +127,7 @@ timeout: "00:00:10"
 
 ## 🧑‍🏫 Hướng dẫn sử dụng
 
-### 1. Tra cứu Âm Lịch
+### 1. Tra cứu
 
 Để tra cứu âm lịch, trong câu chat cần **luôn có từ "âm lịch"**.
 
@@ -162,22 +136,12 @@ timeout: "00:00:10"
 - "Âm lịch hôm nay"
 - "Âm lịch ngày mai"
 - "Cho tôi biết âm lịch 12/12/2025"
+- Tương tự cho dương lịch và sự kiện
 
 ### 2. Tra cứu Sự Kiện
 
 Để tra cứu sự kiện, trong câu chat cần **luôn có từ "sự kiện"**.
 
-**Ví dụ:**
-
-- "Sự kiện hôm nay"
-- "Sự kiện ngày mai"
-- "Cho tôi biết sự kiện 12/12/2025"
-- "Sự kiện tuần này", "Sự kiện tuần sau"
-- "Sự kiện tháng này", "Sự kiện tháng 1"
-
-> Bạn có thể sử dụng **tiếng Việt không dấu** cho các câu lệnh, rất tiện lợi cho người dùng lười gõ dấu.
-
----
 
 ## 🖼️ Ảnh demo
 
@@ -188,12 +152,12 @@ Một số hình ảnh minh họa tính năng (thư mục `image/`):
 ![Demo 3](image/3.png)
 ![Demo 3](image/4.png)
 
----
+
 
 ## 📩 Góp ý & Liên hệ
 
 Bạn có thể tạo issue hoặc pull request nếu phát hiện lỗi hoặc muốn đóng góp cải tiến.
 
----
+
 
 Chúc bạn sử dụng vui vẻ! ✨

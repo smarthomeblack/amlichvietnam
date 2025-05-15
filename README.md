@@ -1,9 +1,12 @@
- #### Update 19h 13/5/2025: Cập nhập file amlich.ics chuẩn và đầy đủ tới 2055
- #### Update 9h 15/5/2025: Cập nhập file amlich.ics thêm nhiều sự kiện, tối ưu tự động hóa, thêm tra cứu âm lịch sang dương lịch,thêm công tắc bật tắt dùng kết quả AI
-# Nếu update thì xóa hết tự động hóa cũ liên quan tới amlichvietnam, tạo thêm công tắc ảo theo hướng dẫn
 # 📅 Lịch Âm cho Home Assistant (Custom Component)
 
-Tiện ích giúp tra cứu Âm Lịch và Sự Kiện theo ngày qua AI hoặc giao diện điều khiển trên Home Assistant.
+Tiện ích giúp tra cứu **Âm Lịch**, **Dương Lịch**, và **Sự Kiện** theo ngày qua giao diện Home Assistant hoặc lệnh thoại (AI). Hỗ trợ tra cứu âm lịch sang dương lịch, hiển thị sự kiện từ file `amlich.ics`, và tùy chỉnh giọng điệu hài hước bằng công tắc.
+
+**Cập nhật mới nhất**:
+- **19h 13/5/2025**: Cập nhật file `amlich.ics` chuẩn, đầy đủ dữ liệu đến năm 2055.
+- **9h 15/5/2025**: Thêm nhiều sự kiện vào `amlich.ics`, tối ưu tự động hóa, hỗ trợ tra cứu âm lịch sang dương lịch, thêm công tắc `input_boolean.use_humor` để bật/tắt giọng điệu hài hước.
+
+> **Lưu ý**: Nếu cập nhật, **xóa tất cả tự động hóa cũ** liên quan đến `amlichvietnam` trước khi áp dụng tự động hóa mới dưới đây.
 
 ---
 
@@ -23,46 +26,56 @@ Tiện ích giúp tra cứu Âm Lịch và Sự Kiện theo ngày qua AI hoặc 
 │   ├── amlich/
 │   │   ├── __init__.py
 │   │   ├── amlich_core.py
+│   │   ├── sensor.py
 │   │   └── ...
 ├── amlich.ics
 ```
 
 ### 2. Tạo biến trợ giúp
 
-- Vào **Cài đặt → Thiết bị & Dịch vụ → Biến trợ giúp**.
-- Tạo một **biến trợ giúp văn bản**, đặt tên là `tracuu`.
-- Đảm bảo entity ID là: `input_text.tracuu`.
-- Tạo một **biến trợ giúp công tắc**, đặt tên là `use humor`.
-- Đảm bảo entity ID là: `input_boolean.use_humor`.
-### 3. Khởi động lại Home Assistant
+- Vào **Settings → Devices & Services → Helpers**.
+- Tạo **Input Text**:
+  - Tên: `Tra cứu`.
+  - Entity ID: `input_text.tracuu`.
+- Tạo **Input Boolean** (công tắc):
+  - Tên: `Bật giọng điệu hài hước`.
+  - Entity ID: `input_boolean.use_humor`.
+  - Mặc định: Tắt (`off`).
 
-### 4. Cấu hình trong `configuration.yaml`
+### 3. Cấu hình trong `configuration.yaml`
 
 Thêm đoạn cấu hình sau:
 
 ```yaml
 amlich:
   path: "/config/amlich.ics"
-  api_key: "apikey"  # Thay "apikey" bằng API key Gemini của bạn
+  api_key: "your_gemini_api_key"  # Thay bằng API key Gemini của bạn
 
 sensor:
-  - platform: amlich  # Nếu đã có phần sensor, chỉ cần thêm dòng này bên dưới
+  - platform: amlich
 ```
 
-### 5. Khởi động lại Home Assistant lần nữa
+### 4. Khởi động lại Home Assistant
 
----
 
-## ✅ Kiểm tra
+### 5. Kiểm tra
 
-- Sau khi khởi động lại, vào Developer Tools → States và kiểm tra xem đã có entity `sensor.tra_cuu_su_kien` chưa.
-- Nếu chưa có, kiểm tra lại kỹ từ bước 2.
+- Vào **Developer Tools → States**, tìm entity `sensor.tra_cuu_su_kien`.
+- Nếu không thấy, kiểm tra log:
+  ```bash
+  cat /config/homeassistant.log | grep amlich
+  ```
+- Đảm bảo `input_text.tracuu` và `input_boolean.use_humor` tồn tại.
 
 ---
 
 ## ⚙️ Tạo tự động hóa (Automation)
 
 ### Tự Động Tra Cứu Nâng Cao
+
+> **Quan trọng**: Xóa mọi tự động hóa cũ liên quan đến `amlichvietnam` trước khi thêm automation mới.
+
+Thêm automation sau vào `automations.yaml` hoặc qua giao diện:
 
 ```yaml
 alias: Tra cứu sự kiện nâng cao
@@ -107,58 +120,78 @@ actions:
       liệu sự kiện, vui lòng thử lại!', true) }}
 mode: single
 
+```
 
-
+---
 
 ## 🧪 Mẹo khắc phục
 
-- Nếu kết quả phản hồi từ chatbot không đúng hoặc bị trễ, hãy thử **tăng timeout** từ `00:00:05` lên `00:00:10`.
-- Nếu bật công tắc dùng phản hồi bằng AI thì nên để timeout >5
+- **Kết quả chậm hoặc không phản hồi**:
+  - Tăng `timeout` trong automation từ `00:00:15` lên `00:00:20` nếu dùng Gemini API (khi bật `input_boolean.use_humor`).
+  - Kiểm tra log:
+    ```bash
+    cat /config/homeassistant.log | grep amlich
+    ```
+- **Sensor không cập nhật**:
+  - Đảm bảo `input_text.tracuu` thay đổi đúng (qua automation hoặc giao diện).
+  - Kiểm tra file `amlich.ics` có trong `/config/amlich.ics`.
+- **Lỗi API**:
+  - Xác nhận `api_key` trong `configuration.yaml` đúng.
+  - Kiểm tra kết nối mạng tới Gemini API.
 
+---
 
-## 🤖 Tùy chỉnh phản hồi bằng AI
+## 🤖 Tùy chỉnh giọng điệu hài hước
 
-Để phản hồi sinh động hơn từ AI:
-
-Bật Công tắc input_boolean.use_humor để phản hồi bằng AI
-
-> ⚠️ Lưu ý: Kết quả sẽ sinh động hơn nhưng phản hồi có thể **chậm hơn** do phụ thuộc tốc độ phản hồi của AI.
+- **Công tắc**: Bật `input_boolean.use_humor` trên Dashboard để trả kết quả với giọng điệu dí dỏm (dùng Gemini AI).
+- **Hiệu ứng**:
+  - Khi bật: Kết quả sinh động, ví dụ: "Lễ Phật Đản, trời xanh mây trắng tha hồ chill!"
+  - Khi tắt: Kết quả nghiêm túc, ví dụ: "Ngày 12/05/2025 là Lễ Phật Đản."
+- **Lưu ý**: Bật công tắc có thể làm phản hồi chậm hơn 2-3 giây do gọi Gemini API.
 
 ---
 
 ## 🧑‍🏫 Hướng dẫn sử dụng
 
-### 1. Tra cứu
+### 1. Tra cứu Âm Lịch
+- Dùng từ khóa **"âm lịch"** trong lệnh.
+- Ví dụ:
+  - "Âm lịch hôm nay" → "Dương lịch 15/05/2025 là ngày 18/04/2025 âm lịch!"
+  - "Âm lịch 12/12/2025" → Tra cứu ngày âm lịch tương ứng.
+  - "Âm lịch ngày mai" → Thông tin ngày âm lịch của ngày mai.
 
-Để tra cứu âm lịch, trong câu chat cần **luôn có từ "âm lịch"**.
+### 2. Tra cứu Dương Lịch
+- Dùng từ khóa **"dương lịch"**.
+- Ví dụ:
+  - "Dương lịch 12/12/2025" → "Dương lịch 12/12/2025 là ngày 16/11/2025 âm lịch!"
+  - "Dương lịch hôm nay" → Thông tin ngày hiện tại.
 
-**Ví dụ:**
+### 3. Tra cứu Sự Kiện
+- Dùng từ khóa **"sự kiện"**.
+- Ví dụ:
+  - "Sự kiện tuần này" → Liệt kê sự kiện từ 12/05/2025 đến 18/05/2025 (ví dụ: Lễ Phật Đản, Ngày của mẹ).
+  - "Sự kiện tháng 5" → Sự kiện trong tháng 5/2025.
+  - "Sự kiện 12/05/2025" → Sự kiện cụ thể của ngày.
 
-- "Âm lịch hôm nay"
-- "Âm lịch ngày mai"
-- "Cho tôi biết âm lịch 12/12/2025"
-- Tương tự cho dương lịch và sự kiện
+### 4. Sử dụng qua Dashboard
+- Nhập truy vấn vào `input_text.tracuu` (ví dụ: "Sự kiện tuần này").
+- Kết quả hiển thị trong `sensor.tra_cuu_su_kien` (state và attributes).
 
-### 2. Tra cứu Sự Kiện
-
-Để tra cứu sự kiện, trong câu chat cần **luôn có từ "sự kiện"**.
-
+---
 
 ## 🖼️ Ảnh demo
 
-Một số hình ảnh minh họa tính năng (thư mục `image/`):
+Xem thư mục `image/`:
+- ![Demo 1](image/1.png)
+- ![Demo 2](image/2.png)
+- ![Demo 3](image/3.png)
+- ![Demo 4](image/4.png)
 
-![Demo 1](image/1.png)
-![Demo 2](image/2.png)
-![Demo 3](image/3.png)
-![Demo 3](image/4.png)
-
-
+---
 
 ## 📩 Góp ý & Liên hệ
 
-Bạn có thể tạo issue hoặc pull request nếu phát hiện lỗi hoặc muốn đóng góp cải tiến.
-
-
+- Tạo **issue** hoặc **pull request** trên repository nếu có lỗi hoặc muốn cải tiến.
+- Liên hệ qua cộng đồng Home Assistant Việt Nam.
 
 Chúc bạn sử dụng vui vẻ! ✨

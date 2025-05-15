@@ -52,7 +52,9 @@ class AmlichSensor(SensorEntity):
                 if query:
                     _LOGGER.debug(f"Xử lý truy vấn: {query}")
                     async def handle_query():
-                        result = await query_date(self._hass, query, use_humor=False)
+                        # Đọc trạng thái input_boolean.use_humor
+                        use_humor = self._hass.states.get("input_boolean.use_humor").state == "on" if self._hass.states.get("input_boolean.use_humor") else False
+                        result = await query_date(self._hass, query, use_humor=use_humor)
                         self._attributes = {
                             "output": result.get("output", "Không có dữ liệu"),
                             "date": result.get("date"),
@@ -72,7 +74,9 @@ class AmlichSensor(SensorEntity):
 
             input_state = self._hass.states.get(INPUT_TEXT_ENTITY)
             if input_state and input_state.state and input_state.state != STATE_UNKNOWN:
-                result = await query_date(self._hass, input_state.state.strip(), use_humor=False)
+                # Đọc trạng thái input_boolean.use_humor
+                use_humor = self._hass.states.get("input_boolean.use_humor").state == "on" if self._hass.states.get("input_boolean.use_humor") else False
+                result = await query_date(self._hass, input_state.state.strip(), use_humor=use_humor)
                 self._attributes = {
                     "output": result.get("output", "Không có dữ liệu"),
                     "date": result.get("date"),

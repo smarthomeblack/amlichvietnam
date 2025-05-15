@@ -28,7 +28,12 @@ class AmlichSensor(SensorEntity):
     def __init__(self, hass: HomeAssistant):
         self._hass = hass
         self._state = "Không có dữ liệu"
-        self._attributes = {"output": "Không có dữ liệu"}
+        self._attributes = {
+            "output": "Không có dữ liệu",
+            "is_lunar": False,
+            "lunar_date": None,  # Lưu ngày âm lịch dạng DD/MM/YYYY
+            "events": []
+        }
         self._attr_name = "Tra Cứu Sự Kiện"
         self._attr_unique_id = f"{DOMAIN}_su_kien_sensor"
         self._attr_should_poll = False
@@ -46,13 +51,18 @@ class AmlichSensor(SensorEntity):
                 query = new_state.state.strip()
                 if query:
                     _LOGGER.debug(f"Xử lý truy vấn: {query}")
-                    # Tạo coroutine để gọi query_date
                     async def handle_query():
-                        result = await query_date(self._hass, query, use_humor=True)
-                        self._attributes = result
+                        result = await query_date(self._hass, query, use_humor=False)
+                        self._attributes = {
+                            "output": result.get("output", "Không có dữ liệu"),
+                            "date": result.get("date"),
+                            "range": result.get("range"),
+                            "is_lunar": result.get("is_lunar", False),
+                            "lunar_date": result.get("lunar_date"),  # Đảm bảo chứa năm (DD/MM/YYYY)
+                            "events": result.get("events", [])
+                        }
                         self._state = result.get("output", "Không có dữ liệu")[:255]
                         self.async_write_ha_state()
-                    # Chạy coroutine trong event loop
                     self._hass.async_create_task(handle_query())
 
             async_track_state_change_event(
@@ -62,8 +72,15 @@ class AmlichSensor(SensorEntity):
 
             input_state = self._hass.states.get(INPUT_TEXT_ENTITY)
             if input_state and input_state.state and input_state.state != STATE_UNKNOWN:
-                result = await query_date(self._hass, input_state.state.strip(), use_humor=True)
-                self._attributes = result
+                result = await query_date(self._hass, input_state.state.strip(), use_humor=False)
+                self._attributes = {
+                    "output": result.get("output", "Không có dữ liệu"),
+                    "date": result.get("date"),
+                    "range": result.get("range"),
+                    "is_lunar": result.get("is_lunar", False),
+                    "lunar_date": result.get("lunar_date"),  # Đảm bảo chứa năm (DD/MM/YYYY)
+                    "events": result.get("events", [])
+                }
                 self._state = result.get("output", "Không có dữ liệu")[:255]
                 self.async_write_ha_state()
                 _LOGGER.debug("Đã cập nhật state ban đầu cho sensor.tra_cuu_su_kien")

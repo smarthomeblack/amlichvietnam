@@ -3,7 +3,7 @@
   "name": "Âm Lịch Và Sự Kiện Việt Nam",
   "version": "1.0.0",
   "documentation": "https://github.com/smarthomeblack/amlichvietnam",
-  "requirements": ["icalendar==5.0.13", "python-dateutil==2.9.0", "requests==2.32.3"],
+  "requirements": ["icalendar==5.0.13", "python-dateutil==2.9.0", "requests==2.32.3", "pyluach==2.2.0"],
   "codeowners": ["@smarthomeblack"],
   "iot_class": "local_polling"
 }

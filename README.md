@@ -115,10 +115,21 @@ actions:
   - wait_template: "{{ states('sensor.tra_cuu_su_kien') != old_value }}"
     timeout: "00:00:5"
     continue_on_timeout: true
+  - if:
+      - condition: state
+        entity_id: input_boolean.use_humor
+        state: "on"
+    then:
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 4
+          milliseconds: 0
   - set_conversation_response: >-
       {{ state_attr('sensor.tra_cuu_su_kien', 'output') | default('Không có dữ
       liệu sự kiện, vui lòng thử lại!', true) }}
 mode: single
+
 
 ```
 

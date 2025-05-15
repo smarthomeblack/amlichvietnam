@@ -1,5 +1,6 @@
  #### Update 19h 13/5/2025: Cập nhập file amlich.ics chuẩn và đầy đủ tới 2055
- #### Update 9h 15/5/2025: Cập nhập file amlich.ics thêm nhiều sự kiện, tối ưu tự động hóa, thêm tra cứu âm lịch sang dương lịch
+ #### Update 9h 15/5/2025: Cập nhập file amlich.ics thêm nhiều sự kiện, tối ưu tự động hóa, thêm tra cứu âm lịch sang dương lịch,thêm công tắc bật tắt dùng kết quả AI
+# Nếu update thì xóa hết tự động hóa cũ liên quan tới amlichvietnam, tạo thêm công tắc ảo theo hướng dẫn
 # 📅 Lịch Âm cho Home Assistant (Custom Component)
 
 Tiện ích giúp tra cứu Âm Lịch và Sự Kiện theo ngày qua AI hoặc giao diện điều khiển trên Home Assistant.
@@ -31,7 +32,8 @@ Tiện ích giúp tra cứu Âm Lịch và Sự Kiện theo ngày qua AI hoặc 
 - Vào **Cài đặt → Thiết bị & Dịch vụ → Biến trợ giúp**.
 - Tạo một **biến trợ giúp văn bản**, đặt tên là `tracuu`.
 - Đảm bảo entity ID là: `input_text.tracuu`.
-
+- Tạo một **biến trợ giúp công tắc**, đặt tên là `use humor`.
+- Đảm bảo entity ID là: `input_boolean.use_humor`.
 ### 3. Khởi động lại Home Assistant
 
 ### 4. Cấu hình trong `configuration.yaml`
@@ -57,7 +59,7 @@ sensor:
 - Nếu chưa có, kiểm tra lại kỹ từ bước 2.
 
 ---
-## Nếu update thì xóa hết tự động hóa cũ liên quan tới amlichvietnam
+
 ## ⚙️ Tạo tự động hóa (Automation)
 
 ### Tự Động Tra Cứu Nâng Cao
@@ -111,15 +113,14 @@ mode: single
 ## 🧪 Mẹo khắc phục
 
 - Nếu kết quả phản hồi từ chatbot không đúng hoặc bị trễ, hãy thử **tăng timeout** từ `00:00:05` lên `00:00:10`.
+- Nếu bật công tắc dùng phản hồi bằng AI thì nên để timeout >5
 
 
 ## 🤖 Tùy chỉnh phản hồi bằng AI
 
 Để phản hồi sinh động hơn từ AI:
 
-1. Mở file `sensor.py` trong thư mục `custom_components/amlich`.
-2. Tìm tất cả dòng có chứa `use_humor=False` và sửa thành `use_humor=True`.
-3. Khởi động lại Home Assistant.
+Bật Công tắc input_boolean.use_humor để phản hồi bằng AI
 
 > ⚠️ Lưu ý: Kết quả sẽ sinh động hơn nhưng phản hồi có thể **chậm hơn** do phụ thuộc tốc độ phản hồi của AI.
 
